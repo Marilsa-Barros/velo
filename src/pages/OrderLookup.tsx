@@ -57,8 +57,8 @@ const OrderLookup = () => {
       return;
     }
     
-    if (order) {
-      setSearchedOrder(order);
+    if (order) {     
+      setSearchedOrder(order); 
     } else {
       setNotFound(true);
     }
@@ -84,19 +84,17 @@ const OrderLookup = () => {
             <form onSubmit={handleSearch} className="space-y-4">
               <div>
                 <Label htmlFor="order-id">Número do Pedido</Label>
-                <Input
-                  id="order-id"
-                  data-testid="search-order-id"
+                <Input              
                   type="text"
-                  placeholder="Ex: VLO-ABC123"
+                  id='order-id'
+                  placeholder="Ex: VLO-ABCD10"
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value)}
                   className="mt-1"
                 />
               </div>
               <Button
-                type="submit"
-                data-testid="search-order-button"
+                type="submit"              
                 className="w-full"
                 disabled={!orderId.trim() || isLoading}
               >
@@ -140,14 +138,13 @@ const OrderLookup = () => {
                   <Package className="w-5 h-5 text-muted-foreground" />
                   <div>
                     <p className="text-sm text-muted-foreground">Pedido</p>
-                    <p className="font-mono font-medium" data-testid="order-result-id">
+                    <p className="font-mono font-medium" >
                       {searchedOrder.id}
                     </p>
                   </div>
                 </div>
                 <div
-                  data-testid="order-result-status"
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
                     searchedOrder.status === 'APROVADO'
                       ? 'bg-green-100 text-green-700'
                       : 'bg-red-100 text-red-700'
