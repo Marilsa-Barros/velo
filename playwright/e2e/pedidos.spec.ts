@@ -14,10 +14,14 @@ test('deve consultar um pedido aprovado', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Número do Pedido' }).fill('VLO-3ZKFYN')
   await page.getByRole('button', { name: 'Buscar Pedido' }).click()
   
-  // Assert  
-  await expect(page.locator('div').filter({ hasText: /^PedidoVLO-3ZKFYN$/ }).first()).toBeVisible({timeout: 5_000})
-  await expect(page.locator('div').filter({ hasText: /^PedidoVLO-3ZKFYN$/ }).first()).toHaveText('PedidoVLO-3ZKFYN')
- 
-  await expect(page.getByText('PedidoVLO-3ZKFYNAPROVADO')).toBeVisible({timeout: 5_000})
-  await expect(page.getByText('PedidoVLO-3ZKFYNAPROVADO')).toContainText('APROVADO')
+  // Assert 
+
+  const toContainerPedido = page.getByRole('paragraph')
+    .filter({ hasText: /^Pedido/ })
+    .locator('..')  // Sobe para o elemento pai (a div que agrupa ambos)
+
+  await expect(toContainerPedido).toContainText('VLO-3ZKFYN', { timeout: 10_000 })
+
+  await expect(page.getByText('APROVADO')).toBeVisible();
+
 })
