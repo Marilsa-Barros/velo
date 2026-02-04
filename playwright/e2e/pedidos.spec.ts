@@ -29,14 +29,45 @@ import { generateOrderCode } from '../support/helpers'
     await page.getByRole('button', { name: 'Buscar Pedido' }).click()
     
     // Assert 
+    // validação dos elementos de forma estática item por item
+    // const toContainerPedido = page.getByRole('paragraph')
+    //   .filter({ hasText: /^Pedido/ })
+    //   .locator('..')  // Sobe para o elemento pai (a div que agrupa ambos)
   
-    const toContainerPedido = page.getByRole('paragraph')
-      .filter({ hasText: /^Pedido/ })
-      .locator('..')  // Sobe para o elemento pai (a div que agrupa ambos)
+    // await expect(toContainerPedido).toContainText(order, { timeout: 10_000 })
   
-    await expect(toContainerPedido).toContainText(order, { timeout: 10_000 })
+    // await expect(page.getByText('APROVADO')).toBeVisible();
   
-    await expect(page.getByText('APROVADO')).toBeVisible();
+
+    // validação dos elementos de forma dinamica com snapshot
+    await expect(page.getByTestId(`order-result-${order}`)).toMatchAriaSnapshot(`
+      - img
+      - paragraph: Pedido
+      - paragraph: ${order}
+      - img
+      - text: APROVADO
+      - img "Velô Sprint"
+      - paragraph: Modelo
+      - paragraph: Velô Sprint
+      - paragraph: Cor
+      - paragraph: Lunar White
+      - paragraph: Interior
+      - paragraph: cream
+      - paragraph: Rodas
+      - paragraph: aero Wheels
+      - heading "Dados do Cliente" [level=4]
+      - paragraph: Nome
+      - paragraph: Marilsa Barros
+      - paragraph: Email
+      - paragraph: marilsa@velo.dev
+      - paragraph: Loja de Retirada
+      - paragraph
+      - paragraph: Data do Pedido
+      - paragraph: /\\d+\\/\\d+\\/\\d+/
+      - heading "Pagamento" [level=4]
+      - paragraph: À Vista
+      - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
+      `)
   
   })
   
