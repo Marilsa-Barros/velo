@@ -27,7 +27,7 @@ test.describe('Consultar Pedido', () => {
 
     const order = {
       number: 'VLO-3ZKFYN',
-      status: 'APROVADO',
+      status: 'APROVADO' as const,
       color: 'Lunar White',
       wheels: 'aero Wheels',
       customer: {
@@ -74,13 +74,7 @@ test.describe('Consultar Pedido', () => {
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
 
-    const statusBadge = page.getByRole('status').filter({ hasText: order.status })
-
-    await expect(statusBadge).toHaveClass(/bg-green-100/)
-    await expect(statusBadge).toHaveClass(/text-green-700/)
-
-    const statusIcon = statusBadge.locator('svg')
-    await expect(statusIcon).toHaveClass(/lucide-circle-check-big/) 
+     await orderLockupPage.validateStatusBadge(order.status)
 
   })
 
@@ -91,7 +85,7 @@ test.describe('Consultar Pedido', () => {
 
     const order = {
       number: 'VLO-HXRRWE',
-      status: 'REPROVADO',
+      status: 'REPROVADO' as const,
       color: 'Midnight Black',
       wheels: 'sport Wheels',
       customer: {
@@ -138,13 +132,8 @@ test.describe('Consultar Pedido', () => {
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
 
-    const statusBadge = page.getByRole('status').filter({ hasText: order.status })
-
-    await expect(statusBadge).toHaveClass(/bg-red-100/)
-    await expect(statusBadge).toHaveClass(/text-red-700/)
-
-    const statusIcon = statusBadge.locator('svg')
-    await expect(statusIcon).toHaveClass(/lucide-circle-x/)
+    // Validação do badge de status encapsulada no Page Object
+    await orderLockupPage.validateStatusBadge(order.status)
 
   })
 
@@ -155,7 +144,7 @@ test.describe('Consultar Pedido', () => {
 
     const order = {
       number: 'VLO-9VNQ7P',
-      status: 'EM_ANALISE',
+      status: 'EM_ANALISE' as const,
       color: 'Lunar White',
       wheels: 'aero Wheels',
       customer: {
@@ -202,13 +191,8 @@ test.describe('Consultar Pedido', () => {
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
 
-      const statusBadge = page.getByRole('status').filter({ hasText: order.status })
-
-      await expect(statusBadge).toHaveClass(/bg-amber-100/)
-      await expect(statusBadge).toHaveClass(/text-amber-700/)
-  
-      const statusIcon = statusBadge.locator('svg')
-      await expect(statusIcon).toHaveClass(/lucide-clock/)
+    // Validação do badge de status encapsulada no Page Object
+    await orderLockupPage.validateStatusBadge(order.status)
 
   })
 
