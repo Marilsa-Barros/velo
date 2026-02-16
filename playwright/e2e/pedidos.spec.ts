@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test'
 
 import { generateOrderCode } from '../support/helpers'
+import { OrderLockupPage } from '../support/pages/OrderLockupPage'
+
+
 
 /// AAA - Arrange, Act, Assert
 
@@ -36,19 +39,10 @@ test.describe('Consultar Pedido', () => {
 
 
     // Act
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.number)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order.number)
 
-    // Assert 
-    // validação dos elementos de forma estática item por item
-    // const toContainerPedido = page.getByRole('paragraph')
-    //   .filter({ hasText: /^Pedido/ })
-    //   .locator('..')  // Sobe para o elemento pai (a div que agrupa ambos)
-
-    // await expect(toContainerPedido).toContainText(order, { timeout: 10_000 })
-
-    // await expect(page.getByText('APROVADO')).toBeVisible();
-
+   
     // validação dos elementos de forma dinamica com snapshot
     await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
       - img
@@ -109,20 +103,10 @@ test.describe('Consultar Pedido', () => {
 
 
     // Act
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.number)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order.number)
 
-    // Assert 
-    // validação dos elementos de forma estática item por item
-    // const toContainerPedido = page.getByRole('paragraph')
-    //   .filter({ hasText: /^Pedido/ })
-    //   .locator('..')  // Sobe para o elemento pai (a div que agrupa ambos)
-
-    // await expect(toContainerPedido).toContainText(order, { timeout: 10_000 })
-
-    // await expect(page.getByText('APROVADO')).toBeVisible();
-
-
+   
     // validação dos elementos de forma dinamica com snapshot
     await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
       - img
@@ -183,18 +167,8 @@ test.describe('Consultar Pedido', () => {
 
 
     // Act
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.number)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
-
-    // Assert 
-    // validação dos elementos de forma estática item por item
-    // const toContainerPedido = page.getByRole('paragraph')
-    //   .filter({ hasText: /^Pedido/ })
-    //   .locator('..')  // Sobe para o elemento pai (a div que agrupa ambos)
-
-    // await expect(toContainerPedido).toContainText(order, { timeout: 10_000 })
-
-    // await expect(page.getByText('APROVADO')).toBeVisible();
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order.number)
 
 
     // validação dos elementos de forma dinamica com snapshot
@@ -241,19 +215,9 @@ test.describe('Consultar Pedido', () => {
   test('deve exibir mensagem quando o pedido não é encontrado', async ({ page }) => {
     const order = generateOrderCode()
 
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
-
-    // await expect(page.locator('#root')).toContainText('Pedido não encontrado')
-    // await expect(page.locator('#root')).toContainText('Verifique o número do pedido e tente novamente')
-
-    // const title = page.getByRole( 'heading', {name: 'Pedido não encontrado', level: 3})
-    // await expect(title).toBeVisible()
-
-    // //const message = page.locator('//p[text()="Verifique o número do pedido e tente novamente"]')
-    // const message = page.locator('p', {hasText: 'Verifique o número do pedido e tente novamente'})
-    // await expect(message).toBeVisible()
-
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order)
+  
     await expect(page.locator('#root')).toMatchAriaSnapshot(`
       - img
       - heading "Pedido não encontrado" [level=3]
