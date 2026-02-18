@@ -1,10 +1,9 @@
-import { test } from '../support/fixtures'
+import { expect, test } from '../support/fixtures'
 
 import { generateOrderCode } from '../support/helpers'
 import { OrderDetails } from '../support/actions/orderLockupActions'
 
 test.describe('Consultar Pedido', () => {
-
   test.beforeEach(async ({ app }) => {
     // Arrange
     await app.orderLockup.open() 
@@ -91,4 +90,11 @@ test.describe('Consultar Pedido', () => {
   
   })
 
+  test('deve manter o botão de busca desabilitado com campo vazio ou apenas espaçoes', async ({app, page}) =>{
+    const button = app.orderLockup.elements.searchButton
+    await expect(button).toBeDisabled()
+        
+    await app.orderLockup.elements.orderInput.fill('    ')
+    await expect(button).toBeDisabled()
+  })
 })
