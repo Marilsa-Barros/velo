@@ -18,7 +18,7 @@ export function createOrderLockupActions(page: Page) {
 
   return {
     elements: {
-      orderInput, 
+      orderInput,
       searchButton
 
     },
