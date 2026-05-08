@@ -2,15 +2,13 @@ import { test, expect } from '../support/fixtures'
 import { generateOrderCode } from '../support/helpers'
 import type { OrderDetails } from '../support/actions/orderLookupActions'
 import { insertOrder, deleteOrderByNumber } from '../support/database/orderRepository'
-import crypto from 'crypto'
+
 
 test.describe('Consulta de Pedido', () => {
 
   test.beforeEach(async ({ app }) => {
     await app.orderLookup.open()
   })
-
-  // VLO-819GQ4
 
   test('deve consultar um pedido aprovado', async ({ app }) => {
 
@@ -22,28 +20,15 @@ test.describe('Consulta de Pedido', () => {
       customer: {
         name: 'Marilsa Barros',
         email: 'marilsa@velo.dev',
+        document: '70571731058',
+        phone: '(11) 99999-9999',
       },
       payment: 'À Vista',
+      total_price: '40000'
     }
 
     await deleteOrderByNumber(order.number)
-
-    await insertOrder({
-      id: crypto.randomUUID(),
-      order_number: order.number,
-      color: 'glacier-blue',
-      wheel_type: 'aero',
-      customer_name: order.customer.name,
-      customer_email: order.customer.email,
-      customer_phone: '(11) 99999-9999',
-      customer_cpf: '705.717.310-58',
-      payment_method: 'avista',
-      total_price: '40000',
-      status: order.status,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      optionals: [],
-    })
+    await insertOrder(order)
 
     await app.orderLookup.searchOrder(order.number)
     await app.orderLookup.validateOrderDetails(order)
@@ -60,28 +45,15 @@ test.describe('Consulta de Pedido', () => {
       customer: {
         name: 'WASHINGTON SANTOS',
         email: 'wa@gamil.com',
+        document: '70571731058',
+        phone: '(11) 99999-9999',
       },
       payment: 'À Vista',
+      total_price: '40000',
     }
 
     await deleteOrderByNumber(order.number)
-
-    await insertOrder({
-      id: crypto.randomUUID(),
-      order_number: order.number,
-      color: 'midnight-black',
-      wheel_type: 'sport',
-      customer_name: order.customer.name,
-      customer_email: order.customer.email,
-      customer_phone: '(11) 99999-9999',
-      customer_cpf: '705.717.310-58',
-      payment_method: 'avista',
-      total_price: '40000',
-      status: order.status,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      optionals: [],
-    })
+    await insertOrder(order)
 
     await app.orderLookup.searchOrder(order.number)
     await app.orderLookup.validateOrderDetails(order)
@@ -97,28 +69,16 @@ test.describe('Consulta de Pedido', () => {
       customer: {
         name: 'Pedro da Silva',
         email: 'pedro@velo.dev',
+        document: '70571731058',
+        phone: '(11) 99999-9999',
       },
       payment: 'À Vista',
+      total_price: '40000',
     }
 
     await deleteOrderByNumber(order.number)
+    await insertOrder(order)
 
-    await insertOrder({
-      id: crypto.randomUUID(),
-      order_number: order.number,
-      color: 'lunar-white',
-      wheel_type: 'aero',
-      customer_name: order.customer.name,
-      customer_email: order.customer.email,
-      customer_phone: '(11) 99999-9999',
-      customer_cpf: '7705.717.310-58',
-      payment_method: 'avista',
-      total_price: '40000',
-      status: order.status,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      optionals: [],
-    })
 
     await app.orderLookup.searchOrder(order.number)
     await app.orderLookup.validateOrderDetails(order)
