@@ -1,6 +1,6 @@
 import { test, expect } from '../support/fixtures'
 import { deleteOrderByEmail } from '../support/database/orderRepository'
-import { TIMEOUT } from 'dns'
+
 
 test.describe('Checkout', () => {
 
@@ -141,8 +141,7 @@ test.describe('Checkout', () => {
             await deleteOrderByEmail(customer.email)
 
             // Arrange
-            await page.goto('/')
-            await page.getByRole('link', { name: /Configure Agora/i }).click()
+            await app.configurator.startFromHome()
 
             await app.configurator.expectPrice(customer.totalPrice)
             await app.configurator.finishConfigurator()
@@ -158,8 +157,7 @@ test.describe('Checkout', () => {
             await app.checkout.submit()
 
             // Assert
-            await expect(page).toHaveURL(/\/success/)
-            await expect(page.getByRole('heading', { name: 'Pedido Aprovado!' })).toBeVisible()
+            await app.success.expectApproved()
         })
 
         test('deve aprovar automaticamente o crédito quando o score do CPF for maior que 700 no financiamento.', async ({ page, app }) => {
@@ -177,20 +175,10 @@ test.describe('Checkout', () => {
             await deleteOrderByEmail(customer.email)
 
 
-            await page.route("**/functions/v1/credit-analysis", async route => {
-                await route.fulfill({
-                    status: 200,
-                    contentType: 'application/json',
-                    body: JSON.stringify({
-                        "status": "Done",
-                        "score": 710,
-                    }),
-                })
-            })
+            await app.checkout.mockCreditScore(710)
 
             // Arrange
-            await page.goto('/')
-            await page.getByRole('link', { name: /Configure Agora/i }).click()
+            await app.configurator.startFromHome()
 
             await app.configurator.expectPrice(customer.totalPrice)
             await app.configurator.finishConfigurator()
@@ -206,8 +194,7 @@ test.describe('Checkout', () => {
             await app.checkout.submit()
 
             // Assert
-            await expect(page).toHaveURL(/\/success/)
-            await expect(page.getByRole('heading', { name: 'Pedido Aprovado!' })).toBeVisible()
+            await app.success.expectApproved()
         })
 
         test('deve encaminhar para análise de crédito quando o score do CPF for entre 501 e 700 no financiamento.', async ({ page, app }) => {
@@ -224,20 +211,10 @@ test.describe('Checkout', () => {
 
             await deleteOrderByEmail(customer.email)
 
-            await page.route("**/functions/v1/credit-analysis", async route => {
-                await route.fulfill({
-                    status: 200,
-                    contentType: 'application/json',
-                    body: JSON.stringify({
-                        "status": "Done",
-                        "score": 600,
-                    }),
-                })
-            })
+            await app.checkout.mockCreditScore(600)
 
             // Arrange
-            await page.goto('/')
-            await page.getByRole('link', { name: /Configure Agora/i }).click()
+            await app.configurator.startFromHome()
 
             await app.configurator.expectPrice(customer.totalPrice)
             await app.configurator.finishConfigurator()
@@ -252,8 +229,7 @@ test.describe('Checkout', () => {
             await app.checkout.submit()
 
             // Assert
-            await expect(page).toHaveURL(/\/success/)
-            await expect(page.getByRole('heading', { name: 'Pedido em Análise!' })).toBeVisible()
+            await app.success.expectInReview()
         })
 
 
@@ -272,20 +248,10 @@ test.describe('Checkout', () => {
 
             await deleteOrderByEmail(customer.email)
 
-            await page.route('**/functions/v1/credit-analysis', async route => {
-                await route.fulfill({
-                    status: 200,
-                    contentType: 'application/json',
-                    body: JSON.stringify({
-                        status: 'Done',
-                        score: 500,
-                    }),
-                })
-            })
+            await app.checkout.mockCreditScore(500)
 
             // Arrange
-            await page.goto('/')
-            await page.getByRole('link', { name: /Configure Agora/i }).click()
+            await app.configurator.startFromHome()
 
             await app.configurator.expectPrice(customer.totalPrice)
             await app.configurator.finishConfigurator()
@@ -300,8 +266,7 @@ test.describe('Checkout', () => {
             await app.checkout.submit()
 
             // Assert
-            await expect(page).toHaveURL(/\/success/)
-            await expect(page.getByRole('heading', { name: /Crédito Reprovado/i })).toBeVisible()
+            await app.success.expectRejected()
         })
 
         test('deve reprovar o crédito quando o score do CPF for menor ou igual a 500 no financiamento com entrada menor que 50%', async ({ page, app }) => {
@@ -320,20 +285,10 @@ test.describe('Checkout', () => {
 
             await deleteOrderByEmail(customer.email)
 
-            await page.route('**/functions/v1/credit-analysis', async route => {
-                await route.fulfill({
-                    status: 200,
-                    contentType: 'application/json',
-                    body: JSON.stringify({
-                        status: 'Done',
-                        score: 500,
-                    }),
-                })
-            })
+            await app.checkout.mockCreditScore(500)
 
             // Arrange
-            await page.goto('/')
-            await page.getByRole('link', { name: /Configure Agora/i }).click()
+            await app.configurator.startFromHome()
 
             await app.configurator.expectPrice(customer.totalPrice)
             await app.configurator.finishConfigurator()
@@ -349,8 +304,83 @@ test.describe('Checkout', () => {
             await app.checkout.submit()
 
             // Assert
-            await expect(page).toHaveURL(/\/success/)
-            await expect(page.getByRole('heading', { name: /Crédito Reprovado/i })).toBeVisible()
+            await app.success.expectRejected()
+        })
+
+        test('deve aprovar o crédito quando o score do CPF for menor ou igual a 500 no financiamento com entrada maior que 50%', async ({ page, app }) => {
+
+            const customer = {
+                name: 'Lara',
+                lastname: 'Sanches',
+                email: 'lara@gmail.com',
+                document: '83964385018',
+                phone: '(11) 99999-9999',
+                store: 'Velô Paulista',
+                paymentMethod: 'Financiamento',
+                totalPrice: 'R$ 40.000,00',
+                downPayment: '30000'
+            }
+
+            await deleteOrderByEmail(customer.email)
+
+            await app.checkout.mockCreditScore(300)
+
+            // Arrange
+            await app.configurator.startFromHome()
+
+            await app.configurator.expectPrice(customer.totalPrice)
+            await app.configurator.finishConfigurator()
+            await app.checkout.expectLoaded()
+
+            await app.checkout.fillCustomerData(customer)
+            await app.checkout.selectStore(customer.store)
+
+            // Act
+            await app.checkout.selectPaymentMethod(customer.paymentMethod)
+            await app.checkout.fillDownPayment(customer.downPayment)
+            await app.checkout.acceptTerms()
+            await app.checkout.submit()
+
+            // Assert
+            await app.success.expectApproved()
+        })
+
+        test('deve aprovar o crédito quando o score do CPF for menor ou igual a 500 no financiamento com entrada igual que 50%', async ({ page, app }) => {
+
+            const customer = {
+                name: 'Pablo',
+                lastname: 'Dantas',
+                email: 'pablo@gmail.com',
+                document: '75725691020',
+                phone: '(11) 99999-9999',
+                store: 'Velô Paulista',
+                paymentMethod: 'Financiamento',
+                totalPrice: 'R$ 40.000,00',
+                downPayment: '20000'
+            }
+
+            await deleteOrderByEmail(customer.email)
+
+            await app.checkout.mockCreditScore(450)
+
+            // Arrange
+            await app.configurator.startFromHome()
+
+            await app.configurator.expectPrice(customer.totalPrice)
+            await app.configurator.finishConfigurator()
+            await app.checkout.expectLoaded()
+
+            await app.checkout.fillCustomerData(customer)
+            await app.checkout.selectStore(customer.store)
+
+            // Act
+            await app.checkout.selectPaymentMethod(customer.paymentMethod)
+            await app.checkout.fillDownPayment(customer.downPayment)
+            await app.checkout.acceptTerms()
+            await app.checkout.submit()
+
+            // Assert
+            await app.success.expectApproved()
         })
     })
 
