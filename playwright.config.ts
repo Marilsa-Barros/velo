@@ -39,10 +39,10 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'https://velo-marilsa.vercel.app',
+    baseURL: 'https://velo-qkx3s10vd-marilsa-barros-projects.vercel.app',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'on',
 
     // tempo máximo para ações interativa como click(), fill()
     // Quando o valor é 0, herda o limite do timeout geral do  teste
