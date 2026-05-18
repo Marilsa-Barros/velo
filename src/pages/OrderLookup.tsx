@@ -47,18 +47,18 @@ const OrderLookup = () => {
     setNotFound(false);
     setSearchedOrder(null);
     setIsLoading(true);
-    
+
     const { order, error } = await getOrderByNumber(orderId);
-    
+
     setIsLoading(false);
-    
+
     if (error) {
       setNotFound(true);
       return;
     }
-    
-    if (order) {     
-      setSearchedOrder(order); 
+
+    if (order) {
+      setSearchedOrder(order);
     } else {
       setNotFound(true);
     }
@@ -84,7 +84,7 @@ const OrderLookup = () => {
             <form onSubmit={handleSearch} className="space-y-4">
               <div>
                 <Label htmlFor="order-id">Número do Pedido</Label>
-                <Input              
+                <Input
                   type="text"
                   id='order-id'
                   placeholder="Ex: VLO-ABCD10"
@@ -94,7 +94,7 @@ const OrderLookup = () => {
                 />
               </div>
               <Button
-                type="submit"              
+                type="submit"
                 className="w-full"
                 disabled={!orderId.trim() || isLoading}
               >
@@ -144,14 +144,13 @@ const OrderLookup = () => {
                   </div>
                 </div>
                 <div
-                    role="status"
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
-                    searchedOrder.status === 'APROVADO'
-                      ? 'bg-green-100 text-green-700'
-                      : searchedOrder.status === 'EM_ANALISE'
+                  role="status"
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${searchedOrder.status === 'APROVADO'
+                    ? 'bg-green-100 text-green-700'
+                    : searchedOrder.status === 'EM_ANALISE'
                       ? 'bg-amber-100 text-amber-700'
                       : 'bg-red-100 text-red-700'
-                  }`}
+                    }`}
                 >
                   {searchedOrder.status === 'APROVADO' ? (
                     <CheckCircle className="w-4 h-4" />
