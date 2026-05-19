@@ -36,7 +36,7 @@ yarn install
 yarn run dev
 ```
 
-Acesse: `http://localhost:4173`
+Acesse: `http://localhost:5173`
 
 ---
 
@@ -69,7 +69,7 @@ yarn add supabase -D
 
 # Login e vincular projeto
 yarn supabase login
-yarn supabase link --project-ref rvoklrlinjvktgywlpvk
+yarn supabase link --project-ref rbigajyozcxqmatnustn
 
 # Aplicar migrações (cria tabelas e RLS)
 yarn supabase db push
